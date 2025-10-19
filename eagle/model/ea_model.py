@@ -7,6 +7,7 @@ import torch.nn as nn
 from huggingface_hub import hf_hub_download
 from transformers import AutoTokenizer
 import os
+import sys
 from transformers import PreTrainedModel, PretrainedConfig, AutoConfig
 
 from .modeling_llama_kv import LlamaForCausalLM as KVLlamaForCausalLM
@@ -250,7 +251,23 @@ class EaModel(nn.Module):
         )
         new_token = 0
         max_length = max_length - self.ea_layer.total_tokens - 10
+
+        compressed = 0
         for idx in range(max_length):
+            print("Len past_key_values: ", len(past_key_values))
+            print("Len past_key_values_data[0]: ", len(past_key_values_data[0]))
+            print("Len current_length_data: ", len(current_length_data))
+
+            #print("past_key_values: ", past_key_values)
+            #print("past_key_values_data[0]: ", past_key_values_data[0])
+            print("current_length_data: ", current_length_data)
+            # Reference for below code line: https://stackoverflow.com/questions/76125524/get-the-memory-needed-to-store-a-tensor-in-pytorch
+            print("past_key_values_data Size: ", past_key_values_data[0].element_size() * past_key_values_data[0].nelement())
+
+            if compressed == 0:
+                past_key_values_data[0] = past_key_values_data[0][:5]
+                compressed = 1
+
             # with Timer("all"):
             self.base_model.model.tree_mask = tree_mask
 
