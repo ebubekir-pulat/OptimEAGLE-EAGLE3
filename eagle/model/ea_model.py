@@ -97,6 +97,8 @@ class EaModel(nn.Module):
             threshold=1.0,
             **kwargs,
     ):
+        print("\n\n\n*** CONFIRMING THIS IS BOTTOM-5-TEST ***\n\n\n")
+
         # assert Type=="LLaMA" or "Mixtral"
         Type = AutoConfig.from_pretrained(base_model_path).architectures[0]
 
@@ -249,6 +251,10 @@ class EaModel(nn.Module):
         new_token = 0
         max_length = max_length - self.ea_layer.total_tokens - 10
         for idx in range(max_length):
+            if len(past_key_values_data[0]) == 64:
+                print("\n\n\n*** Compressing! ***\n\n\n")
+                past_key_values_data[0] = past_key_values_data[0][:5]
+
             # with Timer("all"):
             self.base_model.model.tree_mask = tree_mask
 
