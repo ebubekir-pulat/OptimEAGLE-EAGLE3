@@ -97,6 +97,8 @@ class EaModel(nn.Module):
             threshold=1.0,
             **kwargs,
     ):
+        print("\n\n\n*** CONFIRMING THIS IS KV-TEST-1 ***\n\n\n")
+
         # assert Type=="LLaMA" or "Mixtral"
         Type = AutoConfig.from_pretrained(base_model_path).architectures[0]
 
